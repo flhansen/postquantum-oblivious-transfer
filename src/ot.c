@@ -7,9 +7,8 @@ void OpenCrypto_ot_keygen_sender(struct OpenCrypto_ot_public_parameters pp, stru
     out_sender->public_key = OpenCrypto_math_fast_power(pp.generator, a, pp.modulus);
 }
 
-void OpenCrypto_ot_keygen_receiver(struct OpenCrypto_ot_public_parameters pp, int public_key_sender, struct OpenCrypto_ot_receiver_keys* out_receiver) {
+void OpenCrypto_ot_keygen_receiver(struct OpenCrypto_ot_public_parameters pp, int public_key_sender, int c, struct OpenCrypto_ot_receiver_keys* out_receiver) {
     int b = rand() % pp.modulus;
-    char c = rand() % 2;
 
     out_receiver->secret_key = b;
     out_receiver->k_b = OpenCrypto_math_fast_power(public_key_sender, b, pp.modulus);
@@ -27,6 +26,7 @@ void OpenCrypto_ot_encrypt(struct OpenCrypto_ot_public_parameters pp, struct Ope
     out_ciphers[1] = messages[1] ^ k_1;
 }
 
-int OpenCrypto_ot_decrypt(struct OpenCrypto_ot_receiver_keys receiver, int e_c) {
-    return e_c ^ receiver.k_b;
+void OpenCrypto_ot_decrypt(struct OpenCrypto_ot_receiver_keys receiver, int* ciphers, int number_ciphers, int* out_messages) {
+    for (int i = 0; i < number_ciphers; i++)
+        out_messages[i] = ciphers[i] ^ receiver.k_b;
 }

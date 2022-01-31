@@ -8,6 +8,7 @@
         (*tests[i])(); \
     }
 
-#define ASSERT_EQUALS(value, expected) (assert(value == expected))
+#define EXPECT_TO_BE_EQUAL(value, expected) (assert(value == expected))
+#define EXPECT_NOT_TO_BE_EQUAL(value, expected) (assert(value != expected))
 
 #endif
