@@ -3,7 +3,7 @@
 #include "../src/math.h"
 #include "../src/ot.h"
 
-void test_ot() {
+void test_ot_protocol() {
     struct OpenCrypto_ot_public_parameters pp;
     pp.generator = 3;
     pp.modulus = 11;
@@ -32,7 +32,7 @@ void test_ot() {
 }
 
 int main() {
-    void (*tests[])() = {test_ot};
+    void (*tests[])() = { test_ot_protocol };
     TEST_RUN(tests, 1);
 
     return 0;

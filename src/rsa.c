@@ -1,7 +1,7 @@
 #include "rsa.h"
 #include "math.h"
 
-void OpenCrypto_RSA_keygen(int* out_public_key, int* out_secret_key, int n) {
+void OpenCrypto_RSA_keygen(int* out_public_key, int* out_secret_key) {
     int p = OpenCrypto_math_random_prime();
     int q = OpenCrypto_math_random_prime();
 
