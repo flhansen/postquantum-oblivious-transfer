@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "test.h"
 #include "../src/utils.h"
 #include "../src/math.h"
@@ -31,8 +33,19 @@ void test_ot_protocol() {
     EXPECT_NOT_TO_BE_EQUAL(reconstructed_messages[1], messages[1]);
 }
 
+void test(const char** messages, unsigned int number_messages) {
+    for (int i = 0; i < number_messages; i++) {
+        printf("%d, %s\n", i, messages[i]);
+    }
+}
+
+void test_OT_protocol() {
+    const char* messages[] = {"Test me, I'm a string!\0", "I'm a string, too!\0"};
+    test(messages, ARRAY_LENGTH(messages));
+}
+
 int main() {
-    void (*tests[])() = { test_ot_protocol };
+    void (*tests[])() = { test_OT_protocol };
     TEST_RUN(tests, 1);
 
     return 0;

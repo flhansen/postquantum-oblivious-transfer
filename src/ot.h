@@ -1,6 +1,8 @@
 #ifndef OPENCRYPTO_OBLIVIOUS_TRANSFER_H
 #define OPENCRYPTO_OBLIVIOUS_TRANSFER_H
 
+#include "type.h"
+
 struct OpenCrypto_OT_public_parameters {
     int generator;
     int modulus;

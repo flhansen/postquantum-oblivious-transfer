@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "utils.h"
 #include "math.h"
@@ -87,4 +88,14 @@ int OpenCrypto_math_random_prime() {
     } while (OpenCrypto_math_rabin_miller(candidate, 128) != OPENCRYPTO_TRUE);
 
     return candidate;
+}
+
+void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_size, byte* out_result) {
+    int i = 0;
+
+    while (message[i] != '\0') {
+        out_result[i] = message[i] ^ key[i % key_size];
+        printf("%d\t%c\t%c\t%c\t%d\n", i, key[i % key_size], message[i], out_result[i], out_result[i]);
+        i++;
+    }
 }
