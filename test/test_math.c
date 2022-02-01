@@ -14,9 +14,9 @@ void test_math_xor() {
     OpenCrypto_math_xor(message, key, 14, result);
     result[22] = '\0';
 
-    printf("%s\n", message);
-    printf("%s\n", key);
-    printf("%s\n", result);
+    printf("%02X\n", message);
+    printf("%02X\n", key);
+    printf("%02X\n", result);
 
     for (int i = 0; i < 23; i++) {
         printf("%d, %c\n", result[i], result[i]);
