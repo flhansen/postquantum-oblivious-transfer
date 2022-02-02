@@ -90,6 +90,10 @@ int OpenCrypto_math_random_prime() {
 }
 
 void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_size, byte* out_result) {
-    for (unsigned int i = 0; message[i] != '\0'; i++)
+    int i = 0;
+
+    while (message[i] != '\0') {
         out_result[i] = message[i] ^ key[i % key_size];
+        i++;
+    }
 }
