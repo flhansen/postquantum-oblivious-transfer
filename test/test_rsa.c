@@ -20,5 +20,5 @@ test_result test_rsa_protocol() {
 
 int main() {
     unit_test tests[] = { test_rsa_protocol };
-    TEST_RUN(tests, 1)
+    TEST_RUN(tests, 1);
 }
