@@ -97,3 +97,18 @@ void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_
         i++;
     }
 }
+
+void OpenCrypto_math_add(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
+    for (unsigned int i = size, overflow = 0; i > 0; i--) {
+        unsigned short buffer = number1[i] + number2[i] + overflow;
+        out_result[i] = (byte)buffer;
+        overflow = buffer >> 8;
+    }
+}
+
+void OpenCrypto_math_div(const byte* dividend, const byte* divisor, byte* out_result) {
+    if (dividend == NULL || divisor == NULL)
+        return;
+
+    
+}
