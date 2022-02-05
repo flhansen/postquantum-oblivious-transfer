@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "utils.h"
 #include "math.h"
@@ -122,7 +123,37 @@ void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int 
     OpenCrypto_math_add(number1, out_result, size, out_result);
 }
 
-void OpenCrypto_math_div(const byte* dividend, const byte* divisor, byte* out_result) {
-    if (dividend == NULL || divisor == NULL)
-        return;
+void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
+    memset(out_result, 0, size);
+
+    int continue_subtracting = 1;
+    byte* buffer;
+
+    do {
+        OpenCrypto_math_add(buffer, divisor, size, buffer);
+        continue_subtracting = OpenCrypto_math_less_than(buffer, dividend, size);
+
+        if (continue_subtracting) {
+            byte* one = malloc(size);
+            memset(one, 0, size);
+            one[size-1] = 1;
+
+            OpenCrypto_math_add(out_result, one, size, out_result);
+
+            free(one);
+        }
+
+    } while (continue_subtracting);
+}
+
+int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size) {
+    int less = 0;
+    int found_msb = 0;
+
+    for (unsigned int i = 0; i < size && !found_msb; i++) {
+        found_msb = number1[i] > 0 || number2[i] > 0;
+        less = number1[i] < number2[i];
+    }
+
+    return less;
 }

@@ -66,12 +66,23 @@ test_result test_math_sub() {
     return test_result;
 }
 
+test_result test_math_less_than() {
+    const byte number[] = {0x01, 0x00};
+    const byte bigger_number[] = {0xff, 0x00};
+    const byte lower_number[] = {0x00, 0xff};
+
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_int_to_be(OpenCrypto_math_less_than(number, bigger_number, 2), 1);
+    test_result &= expect_int_to_be(OpenCrypto_math_less_than(number, lower_number, 2), 0);
+    return test_result;
+}
+
 test_result test_math_div() {
     return TEST_ERROR;
 }
 
 int main() {
-    unit_test tests[] = { TEST(test_math_xor), TEST(test_math_inv), TEST(test_math_add), TEST(test_math_sub), TEST(test_math_div) };
+    unit_test tests[] = { TEST(test_math_xor), TEST(test_math_inv), TEST(test_math_add), TEST(test_math_sub), TEST(test_math_less_than), TEST(test_math_div) };
     run_tests(tests, ARRAY_LENGTH(tests));
 
     return 0;
