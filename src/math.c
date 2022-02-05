@@ -98,17 +98,31 @@ void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_
     }
 }
 
+void OpenCrypto_math_inv(const byte* number, unsigned int size, byte* out_result) {
+    for (unsigned int i = 0; i < size; i++)
+        out_result[i] = ~number[i];
+}
+
 void OpenCrypto_math_add(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
-    for (unsigned int i = size, overflow = 0; i > 0; i--) {
+    byte overflow = 0;
+
+    for (int i = size-1; i >= 0; i--) {
+        // We use a buffer, which has more capacity of bits so we can track the overflow
         unsigned short buffer = number1[i] + number2[i] + overflow;
         out_result[i] = (byte)buffer;
         overflow = buffer >> 8;
     }
+
+    if (overflow > 0)
+        out_result[size-1] += overflow;
+}
+
+void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
+    OpenCrypto_math_inv(number2, size, out_result);
+    OpenCrypto_math_add(number1, out_result, size, out_result);
 }
 
 void OpenCrypto_math_div(const byte* dividend, const byte* divisor, byte* out_result) {
     if (dividend == NULL || divisor == NULL)
         return;
-
-    
 }

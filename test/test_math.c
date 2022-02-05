@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -24,9 +23,22 @@ test_result test_math_xor() {
     return test_result;
 }
 
+test_result test_math_inv() {
+    const byte number[] = {0x04, 0xF7};
+    const byte expectation[] = {0xFB, 0x08};
+
+    byte inverse[] = {0x00, 0x00};
+    OpenCrypto_math_inv(number, 2, inverse);
+
+    test_result result = TEST_PASSED;
+    result &= expect_byte_to_be(inverse[0], expectation[0]);
+    result &= expect_byte_to_be(inverse[1], expectation[1]);
+    return result;
+}
+
 test_result test_math_add() {
     const byte number1[] = {0x00, 0xff}; // 255
-    const byte number2[] = {0x00, 0x01}; // 1
+    const byte number2[] = {0xff, 0xff}; 
 
     // Initialize the result with 0 and execute the add operation over number1
     // and number2.
@@ -35,8 +47,23 @@ test_result test_math_add() {
 
     // Check if the result is 256. We just have to check, if the 9th bit is set
     // to 1 (2^8 = 256).
-    expect_byte_to_be(result[0], 0x01);
-    expect_byte_to_be(result[1], 0x00);
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_byte_to_be(result[0], 0x00);
+    test_result &= expect_byte_to_be(result[1], 0xff);
+    return test_result;
+}
+
+test_result test_math_sub() {
+    const byte number1[] = {0xB7, 0xA9};
+    const byte number2[] = {0x8A, 0x01};
+
+    byte result[] = {0x00, 0x00};
+    OpenCrypto_math_sub(number1, number2, 2, result);
+
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_byte_to_be(result[0], 0x2D);
+    test_result &= expect_byte_to_be(result[1], 0xA8);
+    return test_result;
 }
 
 test_result test_math_div() {
@@ -44,8 +71,8 @@ test_result test_math_div() {
 }
 
 int main() {
-    unit_test tests[] = { test_math_xor, test_math_add, test_math_div };
-    TEST_RUN(tests, 3);
+    unit_test tests[] = { TEST(test_math_xor), TEST(test_math_inv), TEST(test_math_add), TEST(test_math_sub), TEST(test_math_div) };
+    run_tests(tests, ARRAY_LENGTH(tests));
 
     return 0;
 }
