@@ -12,7 +12,9 @@ void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_
 void OpenCrypto_math_inv(const byte* number, unsigned int size, byte* out_result);
 void OpenCrypto_math_add(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
 void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
+void OpenCrypto_math_mul(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
 void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result);
+void OpenCrypto_math_mod(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result);
 int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size);
 
 #endif

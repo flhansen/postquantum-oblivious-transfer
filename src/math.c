@@ -123,6 +123,31 @@ void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int 
     OpenCrypto_math_add(number1, out_result, size, out_result);
 }
 
+void OpenCrypto_math_mul(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
+    // Turn every bit of out_result to zero
+    memset(out_result, 0, size);
+
+    // Allocate memory for the counter n
+    byte* n = malloc(size);
+    memset(n, 0, size);
+
+    while (OpenCrypto_math_less_than(n, number2, size)) {
+        // Create a one
+        byte* one = malloc(size);
+        memset(one, 0, size);
+        one[size-1] = 1;
+
+        // Add the number to itself number2 times
+        OpenCrypto_math_add(out_result, number1, size, out_result);
+
+        // Increment n by one
+        OpenCrypto_math_add(n, one, size, n);
+        free(one);
+    }
+
+    free(n);
+}
+
 void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
     // Initialize the result as one (neutral element of division).
     memset(out_result, 0, size);
@@ -163,6 +188,10 @@ void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int
 
     // Free the buffer memory.
     free(buffer);
+}
+
+void OpenCrypto_math_mod(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
+    // TODO: Implement me!
 }
 
 int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size) {

@@ -77,6 +77,21 @@ test_result test_math_less_than() {
     return test_result;
 }
 
+test_result test_math_mul() {
+    const byte number[] = {0x00, 0x80}; // This is 128
+    const byte factor[] = {0x00, 0x04}; // This is 4
+
+    // Calculate 128 * 4
+    byte result[] = {0x00, 0x00};
+    OpenCrypto_math_mul(number, factor, 2, result);
+
+    // Test if the result is 512
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_byte_to_be(result[0], 0x02); 
+    test_result &= expect_byte_to_be(result[1], 0x00);
+    return test_result;
+}
+
 test_result test_math_div() {
     const byte number1[] = {0x00, 0xfe};
     const byte number2[] = {0x00, 0x02};
@@ -91,7 +106,16 @@ test_result test_math_div() {
 }
 
 int main() {
-    unit_test tests[] = { TEST(test_math_xor), TEST(test_math_inv), TEST(test_math_add), TEST(test_math_sub), TEST(test_math_less_than), TEST(test_math_div) };
+    unit_test tests[] = {
+        TEST(test_math_xor),
+        TEST(test_math_inv),
+        TEST(test_math_add),
+        TEST(test_math_sub),
+        TEST(test_math_less_than),
+        TEST(test_math_mul),
+        TEST(test_math_div)
+    };
+
     run_tests(tests, ARRAY_LENGTH(tests));
 
     return 0;
