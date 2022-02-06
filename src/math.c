@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "utils.h"
@@ -119,13 +120,18 @@ void OpenCrypto_math_add(const byte* number1, const byte* number2, unsigned int 
 }
 
 void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
-    OpenCrypto_math_inv(number2, size, out_result);
-    OpenCrypto_math_add(number1, out_result, size, out_result);
+    if (OpenCrypto_math_eq(number1, number2, size)) {
+        memset(out_result, 0, size);
+    } else {
+        OpenCrypto_math_inv(number2, size, out_result);
+        OpenCrypto_math_add(number1, out_result, size, out_result);
+    }
 }
 
 void OpenCrypto_math_mul(const byte* number1, const byte* number2, unsigned int size, byte* out_result) {
     // Turn every bit of out_result to zero
-    memset(out_result, 0, size);
+    byte* mul_result = malloc(size);
+    memset(mul_result, 0, size);
 
     // Allocate memory for the counter n
     byte* n = malloc(size);
@@ -138,17 +144,31 @@ void OpenCrypto_math_mul(const byte* number1, const byte* number2, unsigned int 
         one[size-1] = 1;
 
         // Add the number to itself number2 times
-        OpenCrypto_math_add(out_result, number1, size, out_result);
+        OpenCrypto_math_add(mul_result, number1, size, mul_result);
 
         // Increment n by one
         OpenCrypto_math_add(n, one, size, n);
         free(one);
     }
 
+    memcpy(out_result, mul_result, size);
+
     free(n);
+    free(mul_result);
 }
 
 void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
+    byte* zero = malloc(size);
+    memset(zero, 0, size);
+    
+    if (OpenCrypto_math_eq(dividend, zero, size)) {
+        free(zero);
+        memset(out_result, 0, size);
+        return;
+    }
+
+    free(zero);
+
     // Initialize the result as one (neutral element of division).
     memset(out_result, 0, size);
     out_result[size-1] = 1;
@@ -210,6 +230,61 @@ void OpenCrypto_math_mod(const byte* dividend, const byte* divisor, unsigned int
     } while(continue_subtracting);
 }
 
+void OpenCrypto_math_pow(const byte* base, const byte* exponent, const byte* p, unsigned int size, byte* out_result) {
+    byte* x = malloc(size);
+    memcpy(x, base, size);
+
+    byte* y = malloc(size);
+    memcpy(y, exponent, size);
+
+    // Initialize the result
+    memset(out_result, 0, size);
+    out_result[size-1] = 1;
+
+    // Make sure x is modulus p
+    OpenCrypto_math_mod(x, p, size, x);
+
+    byte* zero = malloc(size);
+    memset(zero, 0, size);
+    byte* one = malloc(size);
+    memset(one, 0, size);
+    one[size-1] = 1;
+    byte* two = malloc(size);
+    memset(two, 0, size);
+    two[size-1] = 2;
+
+
+    while(OpenCrypto_math_less_than(zero, y, size)) {
+        // If y is odd, multiply x with the result
+        byte* ymod2 = malloc(size);
+        OpenCrypto_math_mod(y, two, size, ymod2);
+
+
+        if (OpenCrypto_math_neq(ymod2, zero, size)) {
+            OpenCrypto_math_mul(out_result, x, size, out_result);
+            OpenCrypto_math_mod(out_result, p, size, out_result);
+
+            byte* temp = malloc(size);
+            OpenCrypto_math_sub(y, one, size, temp);
+            memcpy(y, temp, size);
+            free(temp);
+        }
+
+        // Now y must be even
+        OpenCrypto_math_div(y, two, size, y);
+        OpenCrypto_math_mul(x, x, size, x);
+        OpenCrypto_math_mod(x, p, size, x);
+
+        free(ymod2);
+    }
+
+    free(x);
+    free(y);
+    free(zero);
+    free(one);
+    free(two);
+}
+
 int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size) {
     int less = 0;
     int found_msb = 0;
@@ -220,4 +295,17 @@ int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned
     }
 
     return less;
+}
+
+int OpenCrypto_math_eq(const byte* number1, const byte* number2, unsigned int size) {
+    int numbers_are_equal = 1;
+
+    for (unsigned int i = 0; i < size && numbers_are_equal; i++)
+        numbers_are_equal = number1[i] == number2[i];
+
+    return numbers_are_equal;
+}
+
+int OpenCrypto_math_neq(const byte* number1, const byte* number2, unsigned int size) {
+    return !OpenCrypto_math_eq(number1, number2, size);
 }
