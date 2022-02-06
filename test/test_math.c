@@ -78,7 +78,16 @@ test_result test_math_less_than() {
 }
 
 test_result test_math_div() {
-    return TEST_ERROR;
+    const byte number1[] = {0x00, 0xfe};
+    const byte number2[] = {0x00, 0x02};
+
+    byte result[] = {0x00, 0x00};
+    OpenCrypto_math_div(number1, number2, 2, result);
+
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_byte_to_be(result[0], 0x00);
+    test_result &= expect_byte_to_be(result[1], 0x7f);
+    return test_result;
 }
 
 int main() {

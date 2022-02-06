@@ -124,26 +124,45 @@ void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int 
 }
 
 void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
+    // Initialize the result as one (neutral element of division).
     memset(out_result, 0, size);
+    out_result[size-1] = 1;
 
     int continue_subtracting = 1;
-    byte* buffer;
+
+    // Initialize the the buffer as zero (neutral element of addition). The
+    // buffer will be used to count how often the divisor fits in the dividend
+    // by adding the divisor to it every loop.
+    byte* buffer = malloc(2);
+    memset(buffer, 0, size);
 
     do {
+        // As already mentioned, the divisor is added to the buffer.
         OpenCrypto_math_add(buffer, divisor, size, buffer);
+
+        // Check if divisor + buffer is less than the divident. If not, we know
+        // that we found the result.
         continue_subtracting = OpenCrypto_math_less_than(buffer, dividend, size);
 
         if (continue_subtracting) {
+            // Create a one in our byte representation using heap memory (the
+            // amount of bits of the representation format could be very big).
             byte* one = malloc(size);
             memset(one, 0, size);
             one[size-1] = 1;
 
+            // Increment the result, which means, that we are counting, how
+            // often the divisor fits in the dividend.
             OpenCrypto_math_add(out_result, one, size, out_result);
 
+            // Free the temporary 'one' memory.
             free(one);
         }
 
     } while (continue_subtracting);
+
+    // Free the buffer memory.
+    free(buffer);
 }
 
 int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size) {
