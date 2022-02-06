@@ -105,6 +105,20 @@ test_result test_math_div() {
     return test_result;
 }
 
+test_result test_math_mod() {
+    const byte dividend[] = {0x00, 0xff}; // This is 255
+    const byte divisor[]  = {0x00, 0x04}; // This is 4
+
+    byte result[] = {0x00, 0x00};
+    OpenCrypto_math_mod(dividend, divisor, 2, result);
+
+    // Test if the result is 255 mod 4 = 3
+    test_result test_result = TEST_PASSED;
+    test_result &= expect_byte_to_be(result[0], 0x00);
+    test_result &= expect_byte_to_be(result[1], 0x03);
+    return test_result;
+}
+
 int main() {
     unit_test tests[] = {
         TEST(test_math_xor),
@@ -113,7 +127,8 @@ int main() {
         TEST(test_math_sub),
         TEST(test_math_less_than),
         TEST(test_math_mul),
-        TEST(test_math_div)
+        TEST(test_math_div),
+        TEST(test_math_mod)
     };
 
     run_tests(tests, ARRAY_LENGTH(tests));

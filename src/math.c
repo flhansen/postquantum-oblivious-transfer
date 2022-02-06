@@ -191,7 +191,23 @@ void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int
 }
 
 void OpenCrypto_math_mod(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result) {
-    // TODO: Implement me!
+    // Copy the value of dividend, we will subtract divisor from it later.
+    memcpy(out_result, dividend, size);
+    int continue_subtracting;
+
+    do {
+        // Check if the divisor still fits inside the copied dividend remainer
+        continue_subtracting = OpenCrypto_math_less_than(divisor, out_result, size);
+
+        if (continue_subtracting) {
+            // We need to create a temp array instead of manipulating out_result
+            // in one shot. Otherwise out_result would contain inverse bits.
+            byte* temp = malloc(size);
+            OpenCrypto_math_sub(out_result, divisor, size, temp);
+            memcpy(out_result, temp, size);
+            free(temp);
+        }
+    } while(continue_subtracting);
 }
 
 int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size) {
