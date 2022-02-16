@@ -29,8 +29,8 @@ void OpenCrypto_OT_init(OpenCrypto_OT_public_parameters *pp);
 void OpenCrypto_OT_pp_clear(OpenCrypto_OT_public_parameters *pp);
 void OpenCrypto_OT_sender_clear(OpenCrypto_OT_sender_keys *sender);
 void OpenCrypto_OT_receiver_clear(OpenCrypto_OT_receiver_keys *receiver);
-void OpenCrypto_OT_keygen_sender(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* out_sender);
-void OpenCrypto_OT_keygen_receiver(OpenCrypto_OT_public_parameters* pp, const mpz_t public_key_sender, int c, OpenCrypto_OT_receiver_keys* out_receiver);
+void OpenCrypto_OT_init_sender(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* out_sender);
+void OpenCrypto_OT_init_receiver(OpenCrypto_OT_public_parameters* pp, const mpz_t public_key_sender, int c, OpenCrypto_OT_receiver_keys* out_receiver);
 void OpenCrypto_OT_encrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* sender, const mpz_t public_key_receiver, byte messages[2][255], unsigned int number_messages, byte out_ciphers[2][255]);
 void OpenCrypto_OT_decrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_receiver_keys* receiver, byte ciphers[2][255], unsigned int number_ciphers, byte out_messages[2][255]);
 

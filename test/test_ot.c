@@ -17,12 +17,12 @@ test_result test_ot_protocol() {
 
     // Sender side initialization
     OpenCrypto_OT_sender_keys sender;
-    OpenCrypto_OT_keygen_sender(&pp, &sender);
+    OpenCrypto_OT_init_sender(&pp, &sender);
 
     // Receiver side initialization
     int choice = 3;
     OpenCrypto_OT_receiver_keys receiver;
-    OpenCrypto_OT_keygen_receiver(&pp, sender.public_key, choice, &receiver);
+    OpenCrypto_OT_init_receiver(&pp, sender.public_key, choice, &receiver);
 
     // Sender-side encryption
     unsigned char ciphers[5][255];
