@@ -3,25 +3,35 @@
 
 #include "type.h"
 
-struct OpenCrypto_OT_public_parameters {
-    const byte* generator;
-    const byte* modulus;
+struct _OpenCrypto_OT_public_parameters {
+    unsigned int number_bits;
+    mpz_t generator;
+    mpz_t modulus;
+    gmp_randstate_t rand_state;
 };
 
-struct OpenCrypto_OT_sender_keys {
-    const byte* secret_key;
-    const byte* public_key;
+struct _OpenCrypto_OT_sender_keys {
+    mpz_t secret_key;
+    mpz_t public_key;
 };
 
-struct OpenCrypto_OT_receiver_keys {
-    const byte* secret_key;
-    const byte* public_key;
-    const byte* k_b;
+struct _OpenCrypto_OT_receiver_keys {
+    mpz_t secret_key;
+    mpz_t public_key;
+    mpz_t k_b;
 };
 
-void OpenCrypto_OT_keygen_sender(struct OpenCrypto_OT_public_parameters pp, struct OpenCrypto_OT_sender_keys* out_sender);
-void OpenCrypto_OT_keygen_receiver(struct OpenCrypto_OT_public_parameters pp, int public_key_sender, int c, struct OpenCrypto_OT_receiver_keys* out_receiver);
-void OpenCrypto_OT_encrypt(struct OpenCrypto_OT_public_parameters pp, struct OpenCrypto_OT_sender_keys sender, int public_key_receiver, const byte** messages, unsigned int number_messages, byte** out_ciphers);
-void OpenCrypto_OT_decrypt(struct OpenCrypto_OT_receiver_keys receiver, int* ciphers, int number_ciphers, int* out_messages);
+typedef struct _OpenCrypto_OT_public_parameters OpenCrypto_OT_public_parameters;
+typedef struct _OpenCrypto_OT_sender_keys OpenCrypto_OT_sender_keys;
+typedef struct _OpenCrypto_OT_receiver_keys OpenCrypto_OT_receiver_keys;
+
+void OpenCrypto_OT_init(OpenCrypto_OT_public_parameters *pp);
+void OpenCrypto_OT_pp_clear(OpenCrypto_OT_public_parameters *pp);
+void OpenCrypto_OT_sender_clear(OpenCrypto_OT_sender_keys *sender);
+void OpenCrypto_OT_receiver_clear(OpenCrypto_OT_receiver_keys *receiver);
+void OpenCrypto_OT_keygen_sender(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* out_sender);
+void OpenCrypto_OT_keygen_receiver(OpenCrypto_OT_public_parameters* pp, const mpz_t public_key_sender, int c, OpenCrypto_OT_receiver_keys* out_receiver);
+void OpenCrypto_OT_encrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* sender, const mpz_t public_key_receiver, byte messages[2][255], unsigned int number_messages, byte out_ciphers[2][255]);
+void OpenCrypto_OT_decrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_receiver_keys* receiver, byte ciphers[2][255], unsigned int number_ciphers, byte out_messages[2][255]);
 
 #endif

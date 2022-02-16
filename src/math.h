@@ -8,16 +8,5 @@ int OpenCrypto_math_randnrange(int from, int to);
 int OpenCrypto_math_fast_power(int x, unsigned int y, int p);
 int OpenCrypto_math_rabin_miller(int candidate, int number_test_iterations);
 int OpenCrypto_math_random_prime();
-void OpenCrypto_math_xor(const byte* message, const byte* key, unsigned int key_size, byte* out_result);
-void OpenCrypto_math_inv(const byte* number, unsigned int size, byte* out_result);
-void OpenCrypto_math_add(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
-void OpenCrypto_math_sub(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
-void OpenCrypto_math_mul(const byte* number1, const byte* number2, unsigned int size, byte* out_result);
-void OpenCrypto_math_div(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result);
-void OpenCrypto_math_mod(const byte* dividend, const byte* divisor, unsigned int size, byte* out_result);
-void OpenCrypto_math_pow(const byte* base, const byte* exponent, const byte* p, unsigned int size, byte* out_result);
-int OpenCrypto_math_less_than(const byte* number1, const byte* number2, unsigned int size);
-int OpenCrypto_math_eq(const byte* number1, const byte* number2, unsigned int size);
-int OpenCrypto_math_neq(const byte* number1, const byte* number2, unsigned int size);
 
 #endif
