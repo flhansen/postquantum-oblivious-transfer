@@ -20,24 +20,27 @@ test_result test_ot_protocol() {
     OpenCrypto_OT_keygen_sender(&pp, &sender);
 
     // Receiver side initialization
-    int choice = 1;
+    int choice = 3;
     OpenCrypto_OT_receiver_keys receiver;
     OpenCrypto_OT_keygen_receiver(&pp, sender.public_key, choice, &receiver);
 
     // Sender-side encryption
-    unsigned char ciphers[2][255];
-    memset(ciphers, 0, 2*255);
+    unsigned char ciphers[5][255];
+    memset(ciphers, 0, 5*255);
 
     unsigned char messages[][255] = {
         "Test me, I'm a short string!",
-        "Hello friend, can you read me?"
+        "Hello friend, can you read me?",
+        "Goodbye, my almost lover",
+        "Singing the deathmatch",
+        "I'm in the dark"
     };
 
-    OpenCrypto_OT_encrypt(&pp, &sender, receiver.public_key, messages, 2, ciphers);
+    OpenCrypto_OT_encrypt(&pp, &sender, receiver.public_key, messages, 5, ciphers);
 
     // Receiver-side decryption
-    unsigned char reconstructed_messages[2][255];
-    OpenCrypto_OT_decrypt(&pp, &receiver, ciphers, 2, reconstructed_messages);
+    unsigned char reconstructed_messages[5][255];
+    OpenCrypto_OT_decrypt(&pp, &receiver, ciphers, 5, reconstructed_messages);
 
     // Cleanup
     OpenCrypto_OT_pp_clear(&pp);
@@ -45,8 +48,13 @@ test_result test_ot_protocol() {
     OpenCrypto_OT_receiver_clear(&receiver);
 
     test_result test_result = TEST_PASSED;
-    test_result &= expect_int_to_be(strncmp(reconstructed_messages[1], messages[1], strlen(messages[1])), 0);
-    test_result &= expect_int_not_to_be(strncmp(reconstructed_messages[0], messages[0], strlen(messages[0])), 0);
+
+    for (int i = 0; i < 5; i++) {
+        if (i == choice)
+            test_result &= expect_int_to_be(strncmp(reconstructed_messages[i], messages[i], strlen(messages[i])), 0);
+        else
+            test_result &= expect_int_not_to_be(strncmp(reconstructed_messages[i], messages[i], strlen(messages[i])), 0);
+    }
 
     return test_result;
 }

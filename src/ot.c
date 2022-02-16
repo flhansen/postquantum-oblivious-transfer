@@ -59,29 +59,29 @@ void OpenCrypto_OT_keygen_receiver(OpenCrypto_OT_public_parameters* pp, const mp
     mpz_clear(A);
 }
 
-void OpenCrypto_OT_encrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* sender, const mpz_t public_key_receiver, byte messages[2][255], unsigned int number_messages, byte out_ciphers[2][255]) {
-    // Calculate key k_0 = PK_r ^ PK_s % p
-    mpz_t k_0;
-    mpz_init(k_0);
-    mpz_powm(k_0, public_key_receiver, sender->secret_key, pp->modulus);
+void OpenCrypto_OT_encrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_sender_keys* sender, const mpz_t public_key_receiver, byte messages[][255], unsigned int number_messages, byte out_ciphers[][255]) {
+    // Calculate key k_i = (PK_r / (PK_s)^i)^(SK_s) % p
+    for (int i = 0; i < number_messages; i++) {
+        mpz_t k_i;
+        mpz_init(k_i);
 
-    // Calculate key k_1 = (PK_r / PK_s)^(SK_s) % p
-    mpz_t k_1;
-    mpz_init(k_1);
-    mpz_div(k_1, public_key_receiver, sender->public_key);
-    mpz_powm(k_1, k_1, sender->secret_key, pp->modulus);
+        mpz_t A;
+        mpz_init(A);
+        mpz_powm_ui(A, sender->public_key, i, pp->modulus);
 
-    // Encrypt the messages using the corresponding keys
-    OpenCrypto_Crypto_XOR_encrypt(out_ciphers[0], messages[0], strlen(messages[0]), k_0);
-    OpenCrypto_Crypto_XOR_encrypt(out_ciphers[1], messages[1], strlen(messages[1]), k_1);
+        mpz_div(k_i, public_key_receiver, A);
+        mpz_powm(k_i, k_i, sender->secret_key, pp->modulus);
 
-    mpz_clear(k_0);
-    mpz_clear(k_1);
+        OpenCrypto_Crypto_XOR_encrypt(out_ciphers[i], messages[i], strlen(messages[i]), k_i);
+
+        mpz_clear(A);
+        mpz_clear(k_i);
+    }
 }
 
-void OpenCrypto_OT_decrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_receiver_keys* receiver, byte ciphers[2][255], unsigned int number_ciphers, byte out_messages[2][255]) {
-    OpenCrypto_Crypto_XOR_decrypt(out_messages[0], ciphers[0], strlen(ciphers[0]), receiver->k_b);
-    out_messages[0][strlen(ciphers[0])] = '\0';
-    OpenCrypto_Crypto_XOR_decrypt(out_messages[1], ciphers[1], strlen(ciphers[1]), receiver->k_b);
-    out_messages[1][strlen(ciphers[1])] = '\0';
+void OpenCrypto_OT_decrypt(OpenCrypto_OT_public_parameters* pp, OpenCrypto_OT_receiver_keys* receiver, byte ciphers[][255], unsigned int number_ciphers, byte out_messages[][255]) {
+    for (int i = 0; i < number_ciphers; i++) {
+        OpenCrypto_Crypto_XOR_decrypt(out_messages[i], ciphers[i], strlen(ciphers[i]), receiver->k_b);
+        out_messages[i][strlen(ciphers[i])] = '\0';
+    }
 }
