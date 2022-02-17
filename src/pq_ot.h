@@ -34,11 +34,14 @@ struct _OpenCrypto_PQOT_public_parameters {
 };
 
 struct _OpenCrypto_PQOT_sender_keys {
-
+    mpz_t secret_key;
+    mpz_t public_key;
 };
 
 struct _OpenCrypto_PQOT_receiver_keys {
-
+    mpz_t secret_key;
+    mpz_t public_key;
+    mpz_t k_b;
 };
 
 typedef struct _OpenCrypto_PQOT_public_parameters PQOT_public_parameters;
