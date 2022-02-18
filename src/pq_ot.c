@@ -1,7 +1,10 @@
+#include <time.h>
+
 #include "pq_ot.h"
 
 void OpenCrypto_PQOT_init_public_params(PQOT_public_parameters *pp) {
-
+    gmp_randinit_default(pp->rand_state);
+    gmp_randseed_ui(pp->rand_state, clock());
 }
 
 void OpenCrypto_PQOT_init_sender(PQOT_sender_keys *out_sender, PQOT_public_parameters *pp) {
