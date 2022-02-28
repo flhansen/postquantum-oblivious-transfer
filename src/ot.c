@@ -5,7 +5,6 @@
 #include <gmp.h>
 
 #include "ot.h"
-#include "math.h"
 #include "crypto.h"
 
 void OpenCrypto_OT_init(OpenCrypto_OT_public_parameters* pp) {

@@ -1,6 +1,8 @@
 #ifndef OPENCRYPTO_OBLIVIOUS_TRANSFER_H
 #define OPENCRYPTO_OBLIVIOUS_TRANSFER_H
 
+#include <gmp.h>
+
 #include "type.h"
 
 struct _OpenCrypto_OT_public_parameters {

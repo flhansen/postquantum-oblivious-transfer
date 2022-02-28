@@ -29,18 +29,18 @@
 struct _OpenCrypto_PQOT_public_parameters {
     unsigned int number_bits;
     mpz_t generator;
-    mpz_t modulus;
+    byte *modulus;
     gmp_randstate_t rand_state;
 };
 
 struct _OpenCrypto_PQOT_sender_keys {
-    mpz_t secret_key;
-    mpz_t public_key;
+    byte *secret_key;
+    byte *public_key;
 };
 
 struct _OpenCrypto_PQOT_receiver_keys {
-    mpz_t secret_key;
-    mpz_t public_key;
+    byte *secret_key;
+    byte *public_key;
     mpz_t k_b;
 };
 

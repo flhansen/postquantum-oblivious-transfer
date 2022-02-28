@@ -7,6 +7,15 @@
 #include "../src/utils.h"
 #include "../src/math.h"
 #include "../src/ot.h"
+#include "../src/pqot.h"
+
+test_result test_pqot_protocol() {
+    PQOT_public_parameters pp = {0};
+    OpenCrypto_PQOT_init_public_params(&pp);
+
+    OpenCrypto_PQOT_clear_public_params(&pp);
+    return TEST_PASSED;
+}
 
 test_result test_ot_protocol() {
     OpenCrypto_OT_public_parameters pp;
@@ -60,7 +69,7 @@ test_result test_ot_protocol() {
 }
 
 int main() {
-    unit_test tests[] = { TEST(test_ot_protocol) };
+    unit_test tests[] = { TEST(test_ot_protocol), TEST(test_pqot_protocol) };
     run_tests(tests, ARRAY_LENGTH(tests));
 
     return 0;
