@@ -311,16 +311,9 @@ void oc_math_mul(bignum_t out, bignum_t num1, bignum_t num2) {
             unsigned char partial;
             unsigned char overflow = oc_math_mul_overflow(&partial, num1->data[j], num2->data[i]);
 
-            bignum_t partial_result;
-
-            if (overflow > 0) {
-                partial_result = oc_math_initb(2);
-                partial_result->data[0] = partial;
-                partial_result->data[1] = overflow;
-            } else {
-                partial_result = oc_math_initb(1);
-                partial_result->data[0] = partial;
-            }
+            bignum_t partial_result = oc_math_initb(2);
+            partial_result->data[0] = partial;
+            partial_result->data[1] = overflow;
 
             oc_math_lshift(partial_result, partial_result, j+i);
             oc_math_add(out, out, partial_result);
