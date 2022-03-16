@@ -1,4 +1,4 @@
-# OpenCrypto: An open-source library for cryptographers.
+# Post-Quantum Oblivious Transfer: An efficient implementation of the oblivious transfer protocol in the post-quantum domain.
 
 ## How to run the tests
 
